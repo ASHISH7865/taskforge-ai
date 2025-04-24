@@ -30,6 +30,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import TaskNoteModal from './TaskNoteModal';
 import { toast } from 'sonner';
+import { useSortable } from '@dnd-kit/sortable';
 
 export const priorityColors = {
     HIGH: "var(--high, hsl(var(--destructive)))",
@@ -96,6 +97,13 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
     const [editedTitle, setEditedTitle] = useState(task.title);
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
     const dispatch = useDispatch();
+
+    // Add sortable functionality to the drag handle
+    const { attributes, listeners } = useSortable({
+        id: task.id,
+        data: { index: 0 } // This will be overridden by the parent component
+    });
+
     const openNotesModal = useCallback(() => {
         setIsNoteModalOpen(true);
     }, []);
@@ -159,13 +167,16 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
         <>
             <div
                 className={cn(
-                    "group w-full flex items-start p-3 rounded-md relative border transition-all duration-200 hover:translate-y-[-1px] hover:shadow-md overflow-hidden",
+                    "group w-full flex items-start p-3.5 rounded-md relative border transition-all duration-200 hover:translate-y-[-1px] hover:shadow-md overflow-hidden",
+                    // task.priority === "HIGH" && "bg-red-500/5 border-red-500/20",
+                    // task.priority === "MEDIUM" && "bg-amber-500/5 border-amber-500/20",
+                    // task.priority === "LOW" && "bg-blue-500/5 border-blue-500/20",
                     task.selected && "bg-primary/5 border-primary/50 shadow-sm",
                     task.status === "COMPLETED"
                         ? "bg-success/5 border-success/20"
                         : isOverdue
                             ? "bg-destructive/5 border-destructive/20"
-                            : "bg-card/80 border-border/60 hover:bg-card"
+                            : ""
                 )}
             >
                 <div
@@ -173,15 +184,16 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                     style={{ backgroundColor: priorityColor }}
                 />
 
-                <div className="self-center opacity-50 hover:opacity-100 touch-none mr-3  cursor-grab">
+                <div
+                    className="self-center opacity-50 hover:opacity-100 touch-none mr-3 cursor-grab"
+                    {...attributes}
+                    {...listeners}
+                >
                     <GripVertical className="h-4 w-4 text-muted-foreground" />
                 </div>
 
-                {/* Middle section: Task content */}
                 <div className="flex flex-grow">
-                    {/* Completion status indicator - visible but not interactive */}
                     <div className="mr-3 pt-1.5">
-                        {/* Selection checkbox - always visible */}
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -210,7 +222,7 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                             />
                         ) : (
                             <>
-                                <div className="flex items-center gap-2 mb-1.5">
+                                <div className="flex items-center gap-2 mb-2">
                                     <p
                                         className={cn(
                                             "text-sm font-medium leading-normal break-words",
@@ -220,7 +232,6 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                                         {task.title}
                                     </p>
 
-                                    {/* Priority badge - moved closer to title */}
                                     <Badge
                                         variant="outline"
                                         className="h-5 text-[10px] rounded-md py-0 px-1.5 flex gap-1 items-center"
@@ -237,16 +248,13 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                                     </Badge>
                                 </div>
 
-                                {/* Meta information container */}
                                 <div className="flex flex-wrap gap-1.5 items-center">
-
                                     {task.category && <Badge
                                         variant="default"
                                         className={`h-5 text-[10px] rounded-md py-0 px-1.5 flex gap-1 items-center ${categoryColor}`}
                                     >
                                         {task.category}
                                     </Badge>}
-                                    {/* Due date display */}
                                     {formattedDate && (
                                         <Badge
                                             variant={isOverdue ? "destructive" : isDueToday ? "default" : "outline"}
@@ -259,7 +267,6 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                                         </Badge>
                                     )}
 
-                                    {/* Reminder indicator */}
                                     {task.reminder && (
                                         <Badge
                                             variant="secondary"
@@ -270,7 +277,6 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                                         </Badge>
                                     )}
 
-                                    {/* Tags */}
                                     {task.tags && task.tags.length > 0 && task.tags.map((tag, index) => (
                                         <Badge
                                             key={index}
@@ -287,9 +293,7 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                     </div>
                 </div>
 
-                {/* Right section: Actions */}
                 <div className="flex items-start gap-1 ml-2">
-                    {/* Quick actions (visible on hover) */}
                     <div className="hidden group-hover:flex items-center gap-1">
                         <TooltipProvider>
                             <Tooltip>
@@ -347,7 +351,7 @@ const TaskCard = ({ task, onSelect }: TaskCardProps) => {
                                 <MoreHorizontal className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem onClick={openNotesModal} className="gap-2">
                                 <FileText className="h-4 w-4" /> Edit Task
                             </DropdownMenuItem>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import {
     addTodo,
@@ -16,6 +16,8 @@ import {
     LayoutDashboard,
     ListTodo,
     Plus,
+    BarChart3,
+    Star,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -221,54 +223,57 @@ const NewMainScreen: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col p-4 gap-6"
+            className="flex flex-col p-4 md:p-6 gap-6 max-w-[1600px] mx-auto"
         >
             {/* Main Content */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {/* Left sidebar / Task Navigation - Fixed height with sticky position */}
                 <div className="md:col-span-1 h-full">
-                    <Card className="h-full overflow-hidden border shadow-md">
+                    <Card className="h-full overflow-hidden border shadow-md hover:shadow-lg transition-shadow duration-300">
                         {/* Stats section */}
                         {!isZenMode && (
-                            <div className="border-b p-3 bg-muted/20">
-                                <h3 className="text-xs font-medium mb-2 text-muted-foreground tracking-wide uppercase">Statistics</h3>
-                                <div className="space-y-2.5">
-                                    <div className="flex items-center justify-between">
+                            <div className="border-b p-4 bg-gradient-to-br from-muted/30 to-background">
+                                <h3 className="text-xs font-medium mb-3 text-muted-foreground tracking-wide uppercase flex items-center">
+                                    <BarChart3 className="h-3.5 w-3.5 mr-1.5 text-primary" />
+                                    Statistics
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between p-2 rounded-md bg-background/80 hover:bg-background transition-colors">
                                         <div className="flex items-center">
-                                            <ListTodo className="h-3.5 w-3.5 text-primary mr-1.5" />
-                                            <span className="text-xs text-muted-foreground">Total</span>
+                                            <ListTodo className="h-4 w-4 text-primary mr-2" />
+                                            <span className="text-sm text-muted-foreground">Total</span>
                                         </div>
-                                        <span className="text-sm font-medium">{todos.length}</span>
+                                        <span className="text-sm font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">{todos.length}</span>
                                     </div>
 
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between p-2 rounded-md bg-background/80 hover:bg-background transition-colors">
                                         <div className="flex items-center">
-                                            <Clock className="h-3.5 w-3.5 text-amber-500 mr-1.5" />
-                                            <span className="text-xs text-muted-foreground">Pending</span>
+                                            <Clock className="h-4 w-4 text-amber-500 mr-2" />
+                                            <span className="text-sm text-muted-foreground">Pending</span>
                                         </div>
-                                        <span className="text-sm font-medium">{pendingCount}</span>
+                                        <span className="text-sm font-medium bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded-full">{pendingCount}</span>
                                     </div>
 
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between p-2 rounded-md bg-background/80 hover:bg-background transition-colors">
                                         <div className="flex items-center">
-                                            <CheckSquare className="h-3.5 w-3.5 text-emerald-500 mr-1.5" />
-                                            <span className="text-xs text-muted-foreground">Completed</span>
+                                            <CheckSquare className="h-4 w-4 text-emerald-500 mr-2" />
+                                            <span className="text-sm text-muted-foreground">Completed</span>
                                         </div>
-                                        <span className="text-sm font-medium">{completedCount}</span>
+                                        <span className="text-sm font-medium bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full">{completedCount}</span>
                                     </div>
 
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between p-2 rounded-md bg-background/80 hover:bg-background transition-colors">
                                         <div className="flex items-center">
-                                            <span className="h-3.5 w-3.5 flex items-center justify-center bg-red-500/10 text-red-500 rounded-full text-xs font-bold mr-1.5">!</span>
-                                            <span className="text-xs text-muted-foreground">High Priority</span>
+                                            <Star className="h-4 w-4 text-red-500 mr-2" />
+                                            <span className="text-sm text-muted-foreground">High Priority</span>
                                         </div>
-                                        <span className="text-sm font-medium">{highPriorityCount}</span>
+                                        <span className="text-sm font-medium bg-red-500/10 text-red-500 px-2 py-0.5 rounded-full">{highPriorityCount}</span>
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        <CardHeader className="pb-3 pt-3 border-b bg-background">
+                        <CardHeader className="pb-3 pt-4 border-b bg-background">
                             <CardTitle className="text-sm flex items-center tracking-wide uppercase font-medium text-muted-foreground">
                                 <LayoutDashboard className="h-4 w-4 mr-2 text-primary" /> Views
                             </CardTitle>
@@ -279,9 +284,9 @@ const NewMainScreen: React.FC = () => {
                             <Button
                                 variant={activeTab === "all" ? "default" : "ghost"}
                                 className={cn(
-                                    "w-full justify-start pl-4 pr-2 py-2 mb-1 transition-colors",
+                                    "w-full justify-start pl-4 pr-2 py-2.5 mb-1 transition-all duration-200",
                                     activeTab === "all" ?
-                                        "bg-primary text-primary-foreground hover:bg-primary/90" :
+                                        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" :
                                         "hover:bg-accent"
                                 )}
                                 onClick={() => setActiveTab("all")}
@@ -298,9 +303,9 @@ const NewMainScreen: React.FC = () => {
                             <Button
                                 variant={activeTab === "active" ? "default" : "ghost"}
                                 className={cn(
-                                    "w-full justify-start pl-4 pr-2 py-2 mb-1 transition-colors",
+                                    "w-full justify-start pl-4 pr-2 py-2.5 mb-1 transition-all duration-200",
                                     activeTab === "active" ?
-                                        "bg-primary text-primary-foreground hover:bg-primary/90" :
+                                        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" :
                                         "hover:bg-accent"
                                 )}
                                 onClick={() => setActiveTab("active")}
@@ -317,9 +322,9 @@ const NewMainScreen: React.FC = () => {
                             <Button
                                 variant={activeTab === "today" ? "default" : "ghost"}
                                 className={cn(
-                                    "w-full justify-start pl-4 pr-2 py-2 mb-1 transition-colors",
+                                    "w-full justify-start pl-4 pr-2 py-2.5 mb-1 transition-all duration-200",
                                     activeTab === "today" ?
-                                        "bg-primary text-primary-foreground hover:bg-primary/90" :
+                                        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" :
                                         "hover:bg-accent"
                                 )}
                                 onClick={() => setActiveTab("today")}
@@ -336,17 +341,15 @@ const NewMainScreen: React.FC = () => {
                             <Button
                                 variant={activeTab === "important" ? "default" : "ghost"}
                                 className={cn(
-                                    "w-full justify-start pl-4 pr-2 py-2 mb-1 transition-colors",
+                                    "w-full justify-start pl-4 pr-2 py-2.5 mb-1 transition-all duration-200",
                                     activeTab === "important" ?
-                                        "bg-primary text-primary-foreground hover:bg-primary/90" :
+                                        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" :
                                         "hover:bg-accent"
                                 )}
                                 onClick={() => setActiveTab("important")}
                             >
                                 <div className="flex items-center grow">
-                                    <div className="mr-3 flex h-4 w-4 items-center justify-center">
-                                        <span className="h-3 w-3 rounded-full bg-red-500"></span>
-                                    </div>
+                                    <Star className="h-4 w-4 mr-3 text-red-500" />
                                     <span>Important</span>
                                 </div>
                                 <Badge className="ml-auto shrink-0" variant={activeTab === "important" ? "secondary" : "outline"}>
@@ -357,9 +360,9 @@ const NewMainScreen: React.FC = () => {
                             <Button
                                 variant={activeTab === "completed" ? "default" : "ghost"}
                                 className={cn(
-                                    "w-full justify-start pl-4 pr-2 py-2 mb-1 transition-colors",
+                                    "w-full justify-start pl-4 pr-2 py-2.5 mb-1 transition-all duration-200",
                                     activeTab === "completed" ?
-                                        "bg-primary text-primary-foreground hover:bg-primary/90" :
+                                        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" :
                                         "hover:bg-accent"
                                 )}
                                 onClick={() => setActiveTab("completed")}
@@ -377,7 +380,7 @@ const NewMainScreen: React.FC = () => {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="w-full justify-start"
+                                    className="w-full justify-start hover:bg-primary/5 transition-colors"
                                     onClick={createNewTask}
                                 >
                                     <Plus className="h-4 w-4 mr-2" /> Add Task
@@ -389,17 +392,42 @@ const NewMainScreen: React.FC = () => {
 
                 {/* Main task area - Independently scrollable */}
                 <div className="md:col-span-2 lg:col-span-3 h-full">
-                    <Card className="h-full overflow-hidden border shadow-md flex flex-col">
-                        <CardHeader className="flex flex-row items-center justify-between border-b bg-background py-3">
+                    <Card className="h-full overflow-hidden border shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col">
+                        <CardHeader className="flex flex-row items-center justify-between border-b bg-gradient-to-r from-background to-background/95 py-4">
                             <div>
-                                <CardTitle className="text-xl font-semibold">
-                                    {activeTab === "all" && "All Tasks"}
-                                    {activeTab === "active" && "Active Tasks"}
-                                    {activeTab === "completed" && "Completed Tasks"}
-                                    {activeTab === "today" && "Today's Tasks"}
-                                    {activeTab === "important" && "Important Tasks"}
+                                <CardTitle className="text-xl font-semibold flex items-center">
+                                    {activeTab === "all" && (
+                                        <>
+                                            <LayoutDashboard className="h-5 w-5 mr-2 text-primary" />
+                                            All Tasks
+                                        </>
+                                    )}
+                                    {activeTab === "active" && (
+                                        <>
+                                            <Clock className="h-5 w-5 mr-2 text-amber-500" />
+                                            Active Tasks
+                                        </>
+                                    )}
+                                    {activeTab === "completed" && (
+                                        <>
+                                            <CheckSquare className="h-5 w-5 mr-2 text-emerald-500" />
+                                            Completed Tasks
+                                        </>
+                                    )}
+                                    {activeTab === "today" && (
+                                        <>
+                                            <CalendarIcon className="h-5 w-5 mr-2 text-blue-500" />
+                                         {"Today's Tasks"}
+                                        </>
+                                    )}
+                                    {activeTab === "important" && (
+                                        <>
+                                            <Star className="h-5 w-5 mr-2 text-red-500" />
+                                            Important Tasks
+                                        </>
+                                    )}
                                 </CardTitle>
-                                <CardDescription>
+                                <CardDescription className="mt-1">
                                     {filteredTodos.length} {filteredTodos.length === 1 ? 'task' : 'tasks'}
                                 </CardDescription>
                             </div>
@@ -412,16 +440,57 @@ const NewMainScreen: React.FC = () => {
 
                         <CardContent className="p-0 flex-1 overflow-hidden">
                             <div className="p-4 h-full overflow-y-auto">
-                                <TodoInput
-                                    newTodo={newTodo}
-                                    setNewTodo={setNewTodo}
-                                    handleAddTodo={handleAddTodo}
-                                    id="new-task-input"
-                                />
+                                <AnimatePresence mode="wait">
+
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="mb-4"
+                                        >
+                                            <TodoInput
+                                                newTodo={newTodo}
+                                                setNewTodo={setNewTodo}
+                                                handleAddTodo={handleAddTodo}
+                                                id="new-task-input"
+                                            />
+                                        </motion.div>
+
+                                </AnimatePresence>
+
                                 <SortableTaskList
                                     todos={filteredTodos}
                                     initialLoad={initialLoad}
                                 />
+
+                                {filteredTodos.length === 0 && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.2 }}
+                                        className="flex flex-col items-center justify-center py-12 text-center"
+                                    >
+                                        <div className="h-12 w-12 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                                            <ListTodo className="h-6 w-6 text-muted-foreground" />
+                                        </div>
+                                        <h3 className="text-lg font-medium mb-1">No tasks found</h3>
+                                        <p className="text-sm text-muted-foreground max-w-md">
+                                            {activeTab === "all" && "You don&apos;t have any tasks yet. Create your first task to get started."}
+                                            {activeTab === "active" && "You don&apos;t have any active tasks. All your tasks are completed!"}
+                                            {activeTab === "completed" && "You don&apos;t have any completed tasks yet. Complete a task to see it here."}
+                                            {activeTab === "today" && "You don&apos;t have any tasks due today. Add a task with today&apos;s date to see it here."}
+                                            {activeTab === "important" && "You don&apos;t have any high priority tasks. Mark a task as high priority to see it here."}
+                                        </p>
+                                        <Button
+                                            variant="outline"
+                                            className="mt-4"
+                                            onClick={createNewTask}
+                                        >
+                                            <Plus className="h-4 w-4 mr-2" /> Add Task
+                                        </Button>
+                                    </motion.div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

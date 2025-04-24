@@ -60,7 +60,7 @@ For each task identified, create a Todo object with these properties:
 - dueDate: ISO string date if mentioned, null if not specified
 - reminder: true if specific time mentioned, false otherwise
 - position: Use sequential numbers (0, 1, 2...) based on implied order
-- notes: Include detailed, structured information relevant to completing the task
+- notes: Include detailed, structured information relevant to completing the task and notes should be in rich text format , generate proper notes for the task
 
 Current date context: ${currentDate}
 

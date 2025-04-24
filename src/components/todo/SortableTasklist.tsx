@@ -49,8 +49,6 @@ interface NewSortableTaskListProps {
 // Sortable Item wrapper component
 const SortableItem = ({ children, id, index }: { children: React.ReactNode, id: string, index: number }) => {
     const {
-        attributes,
-        listeners,
         setNodeRef,
         transform,
         transition,
@@ -68,7 +66,7 @@ const SortableItem = ({ children, id, index }: { children: React.ReactNode, id: 
     };
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="mb-2 touch-none">
+        <div ref={setNodeRef} style={style} className="mb-2 touch-none">
             {children}
         </div>
     );

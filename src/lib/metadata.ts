@@ -17,6 +17,10 @@ const pageMetadata: Record<string, PageMetadata> = {
     title: "Notes",
     description: "Your personal notes and thoughts",
   },
+  "/mindspace": {
+    title: "Mindspace",
+    description: "Your personal mindspace",
+  },
   "/settings": {
     title: "Settings",
     description: "Configure your application preferences",

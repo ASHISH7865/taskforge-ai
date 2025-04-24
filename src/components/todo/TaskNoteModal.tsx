@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import RichTextEditorComponent from '@/components/editor/rich-text-editor';
+import RichTextEditor from '@/components/editor/rich-text-edtior';
 import { Edit, Save, X, Calendar, Star, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,7 +40,7 @@ const TaskNoteModal: React.FC<TaskNoteModalProps> = ({ open, onClose, task }) =>
   // Local states
   const [taskTitle, setTaskTitle] = useState(task?.title || '');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [taskNotes, setTaskNotes] = useState(task?.notes || '');
+  const [taskNotes, setTaskNotes] = useState(task?.notes || '<p>Write something...</p>');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState('notes');
@@ -259,7 +259,7 @@ const TaskNoteModal: React.FC<TaskNoteModalProps> = ({ open, onClose, task }) =>
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className=" flex flex-col">
+        <DialogContent className=" flex flex-col max-h-[70vh] overflow-y-auto">
           <DialogHeader className="pb-2 border-b">
             <div className="flex justify-between items-start gap-2">
               <div className="flex-1">
@@ -337,7 +337,8 @@ const TaskNoteModal: React.FC<TaskNoteModalProps> = ({ open, onClose, task }) =>
                 <div className="py-2">
                   <Label className="text-sm font-medium">Notes</Label>
                 </div>
-                <RichTextEditorComponent content={taskNotes} setContent={handleNotesChange} />
+                <RichTextEditor content={taskNotes} onChange={handleNotesChange} />
+                {/* <SimpleEditor /> */}
               </TabsContent>
 
               <TabsContent value="settings" className="flex-1 overflow-y-auto">
